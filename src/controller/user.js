@@ -41,6 +41,11 @@ const registerUser = async (req, res) => {
     }
 };
 
+const editUser = async (req, res) => {
+
+};
+
 module.exports = {
-    registerUser
+    registerUser,
+    editUser
 }
