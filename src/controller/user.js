@@ -44,9 +44,13 @@ const registerUser = async (req, res) => {
 
 const detailUser = async (req, res) => {
     return res.json(req.usuario)
+}
+const editUser = async (req, res) => {
+
 };
 
 module.exports = {
     registerUser,
-    detailUser
+    detailUser,
+    editUser
 }
