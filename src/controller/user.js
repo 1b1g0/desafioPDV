@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const knex = require('../database/connection/connection.js');
+const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
     for (let key in req.body) {
@@ -41,6 +42,11 @@ const registerUser = async (req, res) => {
     }
 };
 
+const detailUser = async (req, res) => {
+    return res.json(req.usuario)
+};
+
 module.exports = {
-    registerUser
+    registerUser,
+    detailUser
 }
