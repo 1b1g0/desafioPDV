@@ -10,7 +10,7 @@ router.post("/usuario", registerUser);
 router.post("/login", loginUser);
 
 router.use(verifyToken);
-git status
+
 router.get("/categoria", listCategories);
 router.put("/usuario", editUser);
 router.get("/usuario", detailUser);
