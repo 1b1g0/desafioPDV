@@ -20,7 +20,7 @@ const loginUser = async (req, res) => {
         const senhaUsuario = await bcrypt.compare(senha, usuario.senha);
         if (!senhaUsuario) {
             return res
-                .status(400)
+                .status(401)
                 .json({ mensagem: "Usuário ou senha inválido." });
         }
         const token = jwt.sign({ id: usuario.id }, hashPassword, { expiresIn: '8h' });
@@ -28,8 +28,8 @@ const loginUser = async (req, res) => {
         const { senha: _, ...usuarioLogado } = usuario;
         return res.status(200).json({ usuario: usuarioLogado, token });
     } catch (error) {
-        console.log("Erro ao realizar o login do usuário:", error);
-        res.status(500).json({ mensagem: "Erro interno do servidor" });
+        //console.log("Erro ao realizar o login do usuário:", error);
+        res.status(500).json({ mensagem: error.message });
     }
 };
 
