@@ -8,10 +8,10 @@ const { verifyToken } = require("./middleware/login.js");
 
 router.post("/usuario", registerUser);
 router.post("/login", loginUser);
+router.get("/categoria", listCategories);
 
 router.use(verifyToken);
 
-router.get("/categoria", listCategories);
 router.put("/usuario", editUser);
 router.get("/usuario", detailUser);
 
