@@ -15,9 +15,9 @@ CREATE TABLE categorias (
 INSERT INTO categorias (descricao) VALUES
 ('Informática'),
 ('Celulares'),
-('Beleza_e_Perfumaria'),
+('Beleza e Perfumaria'),
 ('Mercado'),
-('Livros_e_Papelaria'),
+('Livros e Papelaria'),
 ('Brinquedos'),
 ('Moda'),
 ('Bebê'),
