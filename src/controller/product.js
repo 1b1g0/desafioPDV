@@ -9,6 +9,44 @@ const listCategories = async (req, res) => {
     }
 }
 
+const registerProduct = async (req, res) => {
+    const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
+
+    if (!descricao || !valor || !categoria_id) {
+        return res.status(400).json({ mensagem: "Informe todos os campos." });
+    }
+
+    if (valor <= 0) {
+        return res.status(400).json({ mensagem: "Informe um valor válido" });
+    }
+
+    if (quantidade_estoque < 0) {
+        return res.status(400).json({ mensagem: "Informe uma quantidade em estoque válida." })
+    }
+
+    try {
+        const categorieCheck = await knex('categorias')
+            .where('id', categoria_id);
+
+        if (categorieCheck.length === 0) {
+            return res.status(404).json({ mensagem: "Categoria não encontrada." });
+        }
+
+        await knex('produtos')
+            .insert({
+                descricao: descricao,
+                quantidade_estoque: quantidade_estoque,
+                valor: valor,
+                categoria_id: categoria_id
+            });
+
+        return res.status(201).json({ mensagem: "Produto cadastrado com sucesso." })
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+}
+
 module.exports = {
-    listCategories
+    listCategories,
+    registerProduct
 }
