@@ -3,7 +3,7 @@ const router = express();
 
 const { registerUser, detailUser, editUser } = require("./controller/user.js");
 const loginUser = require("./controller/login.js");
-const { listCategories } = require("./controller/product.js");
+const { listCategories, registerProduct } = require("./controller/product.js");
 const { verifyToken } = require("./middleware/login.js");
 
 router.post("/usuario", registerUser);
@@ -14,5 +14,6 @@ router.use(verifyToken);
 
 router.put("/usuario", editUser);
 router.get("/usuario", detailUser);
+router.post("/produto", registerProduct);
 
 module.exports = router;
