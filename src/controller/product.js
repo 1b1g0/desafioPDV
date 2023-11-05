@@ -87,8 +87,6 @@ const editProduct = async (req, res) => {
 const listProduct = async (req, res) => {
     const categoria_id = req.query.categoria_id
 
-
-
     try {
         if (categoria_id) {
             const products = await knex('produtos').where({ categoria_id })
@@ -108,9 +106,26 @@ const listProduct = async (req, res) => {
     }
 }
 
+const detailProduct = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const product = await knex('produtos').where({ id }).first()
+
+        if (!product) {
+            return res.status(404).json({ mensagem: "Produto não encontrado." })
+        }
+        return res.status(200).json(product)
+
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+}
+
 module.exports = {
     listCategories,
     registerProduct,
     editProduct,
-    listProduct
+    listProduct,
+    detailProduct
 }
