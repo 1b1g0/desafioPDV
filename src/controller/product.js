@@ -46,7 +46,38 @@ const registerProduct = async (req, res) => {
     }
 }
 
+const editProduct = async (req, res) => {
+    const { id } = req.params;
+    const { descricao, quantidade_estoque, valor, categoria_id } = req.body
+
+    if (!descricao || !quantidade_estoque || !valor || !categoria_id) {
+        return res.status(400).json({ mensagem: "Informe todos os campos." });
+    }
+
+    try {
+
+        const product = await knex('produtos').where({ id }).first()
+
+        if (!product) {
+            return res.status(404).json({ mensagem: "Produto não encontrado." })
+        }
+
+        await knex('produtos')
+            .where({ id })
+            .update({
+                descricao: descricao,
+                quantidade_estoque: quantidade_estoque,
+                valor: valor,
+                categoria_id: categoria_id
+            });
+
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+}
+
 module.exports = {
     listCategories,
-    registerProduct
+    registerProduct,
+    editProduct
 }
