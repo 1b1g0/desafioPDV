@@ -62,6 +62,12 @@ const editProduct = async (req, res) => {
             return res.status(404).json({ mensagem: "Produto não encontrado." })
         }
 
+        const categories = await knex('categorias').where({ id: categoria_id })
+
+        if (categories.length === 0) {
+            return res.status(404).json({ mensagem: "Categoria não encontrada." });
+        }
+
         await knex('produtos')
             .where({ id })
             .update({
@@ -70,6 +76,8 @@ const editProduct = async (req, res) => {
                 valor: valor,
                 categoria_id: categoria_id
             });
+
+        return res.status(201).json({ mensagem: "Produto atualizado!" })
 
     } catch (error) {
         return res.status(500).json(error.message)
