@@ -30,3 +30,16 @@ CREATE TABLE produtos (
     valor int NOT NULL,
     categoria_id int NOT NULL REFERENCES categorias(id)
 );
+
+CREATE TABLE clientes (
+    id serial PRIMARY KEY,
+    nome varchar(255) NOT NULL,
+    email text UNIQUE NOT NULL,
+    cpf varchar(15) UNIQUE NOT NULL,
+    cep varchar(16),
+    rua text,
+    numero integer,
+    bairro varchar(255),
+    cidade varchar(255),
+    estado varchar(255)
+);
