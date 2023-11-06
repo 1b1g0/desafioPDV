@@ -87,9 +87,8 @@ const editUser = async (req, res) => {
 const listClient = async (req, res) => {
     try {
         const clients = await knex('clientes')
-            .where('usuario_id', id);
-
-        return res.json(clients)
+            
+        return res.status(200).json(clients)
     } catch (error) {
         return res.status(500).json(error.message)
     }
