@@ -44,7 +44,7 @@ const registerUser = async (req, res) => {
 
 const detailUser = async (req, res) => {
     return res.json(req.usuario)
-}
+};
 const editUser = async (req, res) => {
     const { nome, email, senha } = req.body;
 
@@ -84,8 +84,52 @@ const editUser = async (req, res) => {
 
 };
 
+const registerClient = async (req, res) => {
+    const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
+    
+    const needed = {nome, email, cpf};
+    for (let key in needed) {
+        if (!needed[key]) {
+            return res.status(400).json({ mensagem: `O campo ${key} não pode ser vazio.` })
+        }
+    }
+    if ( !nome || !email || !cpf ) {
+        return res.status(400).json('Insira todos os campos.');
+    }
+
+    try {
+        const emailCheck = await knex('clientes').where('email', email).first();
+        if (emailCheck) {
+            return res.status(400).json('Email já cadastrado.');
+        }
+
+        const cpfCheck = await knex('clientes').where('cpf', cpf).first();
+        if (cpfCheck) {
+            return res.status(400).json('CPF já cadastrado.');
+        }
+
+        const clientRegister = await knex('clientes').insert(req.body);
+        return res.status(200).json('Cliente cadastrado com sucesso.');
+        
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+    
+
+
+/*
+Essa é a rota que permite usuário logado cadastrar um novo cliente no sistema.
+
+*/
+
+};
+
+
+
+
 module.exports = {
     registerUser,
     detailUser,
-    editUser
+    editUser,
+    registerClient,
 }
