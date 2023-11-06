@@ -84,6 +84,16 @@ const editUser = async (req, res) => {
 
 };
 
+const listClient = async (req, res) => {
+    try {
+        const clients = await knex('clientes')
+            
+        return res.status(200).json(clients)
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+}
+
 const registerClient = async (req, res) => {
     const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
     
@@ -114,14 +124,6 @@ const registerClient = async (req, res) => {
     } catch (error) {
         return res.status(500).json(error.message)
     }
-    
-
-
-/*
-Essa é a rota que permite usuário logado cadastrar um novo cliente no sistema.
-
-*/
-
 };
 
 
@@ -131,5 +133,6 @@ module.exports = {
     registerUser,
     detailUser,
     editUser,
+    listClient,
     registerClient,
 }

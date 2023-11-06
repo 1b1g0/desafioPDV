@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express();
 
-const { registerUser, detailUser, editUser, registerClient } = require("./controller/user.js");
+const { registerUser, detailUser, editUser, listClient, registerClient } = require("./controller/user.js");
 const loginUser = require("./controller/login.js");
 const { listCategories, registerProduct, editProduct, listProduct, detailProduct } = require("./controller/product.js");
 const { verifyToken } = require("./middleware/login.js");
@@ -11,7 +11,7 @@ router.post("/login", loginUser);
 router.get("/categoria", listCategories);
 
 router.use(verifyToken);
-
+router.get("/cliente", listClient);
 router.put("/usuario", editUser);
 router.get("/usuario", detailUser);
 router.post("/produto", registerProduct);
