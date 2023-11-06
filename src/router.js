@@ -11,7 +11,7 @@ router.post("/login", loginUser);
 router.get("/categoria", listCategories);
 
 router.use(verifyToken);
-
+router.get("/cliente", listClient);
 router.put("/usuario", editUser);
 router.get("/usuario", detailUser);
 router.post("/produto", registerProduct);

@@ -44,7 +44,7 @@ const registerUser = async (req, res) => {
 
 const detailUser = async (req, res) => {
     return res.json(req.usuario)
-}
+};
 const editUser = async (req, res) => {
     const { nome, email, senha } = req.body;
 
@@ -84,8 +84,21 @@ const editUser = async (req, res) => {
 
 };
 
+const listClient = async (req, res) => {
+    try {
+        const clients = await knex('clientes')
+            .where('usuario_id', id);
+
+        return res.json(clients)
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+}
+
 module.exports = {
     registerUser,
     detailUser,
-    editUser
+    editUser,
+    listClient
+    
 }
