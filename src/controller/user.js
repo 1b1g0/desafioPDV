@@ -63,7 +63,7 @@ const editUser = async (req, res) => {
         const userCheck = await knex('usuarios')
             .where('email', email);
 
-        
+
         if (userCheck.length > 0 && userCheck[0].id !== id) {
             return res.status(409).json({ mensagem: 'Já existe um usuário cadastrado com esse e-mail!' });
         };
@@ -71,13 +71,13 @@ const editUser = async (req, res) => {
         const encryptedPassword = await bcrypt.hash(senha, 10);
 
         await knex('usuarios').where('id', id).update({
-                nome: nome,
-                email: email,
-                senha: encryptedPassword
-            });
+            nome: nome,
+            email: email,
+            senha: encryptedPassword
+        });
 
         return res.status(204).send();
-        
+
     } catch (error) {
         return res.status(500).json(error.message);
     };
@@ -87,7 +87,7 @@ const editUser = async (req, res) => {
 const listClient = async (req, res) => {
     try {
         const clients = await knex('clientes')
-            
+
         return res.status(200).json(clients)
     } catch (error) {
         return res.status(500).json(error.message)
@@ -96,14 +96,14 @@ const listClient = async (req, res) => {
 
 const registerClient = async (req, res) => {
     const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
-    
-    const needed = {nome, email, cpf};
+
+    const needed = { nome, email, cpf };
     for (let key in needed) {
         if (!needed[key]) {
             return res.status(400).json({ mensagem: `O campo ${key} não pode ser vazio.` })
         }
     }
-    if ( !nome || !email || !cpf ) {
+    if (!nome || !email || !cpf) {
         return res.status(400).json('Insira todos os campos.');
     }
 
@@ -120,14 +120,35 @@ const registerClient = async (req, res) => {
 
         const clientRegister = await knex('clientes').insert(req.body);
         return res.status(200).json('Cliente cadastrado com sucesso.');
-        
     } catch (error) {
         return res.status(500).json(error.message)
     }
 };
 
-
-
+const detailCustomer = async (req, res) => {
+    try {
+        const { id } = req.params
+        const cliente = await knex('clientes').where({ id }).first();
+        if (!cliente) {
+            return res.status(404).json({ mensagem: 'Cliente não encontrado.' })
+        }
+        const info = {
+            id: cliente.id,
+            nome: cliente.nome,
+            email: cliente.email,
+            cpf: cliente.cpf,
+            cep: cliente.cep,
+            rua: cliente.rua,
+            numero: cliente.numero,
+            bairro: cliente.bairro,
+            cidade: cliente.cidade,
+            estado: cliente.estado
+        }
+        res.status(200).json(info);
+    } catch (error) {
+        res.status(500).json({ mensagem: "Erro interno do servidor" });
+    }
+};
 
 module.exports = {
     registerUser,
@@ -135,4 +156,5 @@ module.exports = {
     editUser,
     listClient,
     registerClient,
+    detailCustomer
 }
