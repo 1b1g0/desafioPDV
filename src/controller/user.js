@@ -125,6 +125,45 @@ const registerClient = async (req, res) => {
     }
 };
 
+const editClient = async (req, res) => {
+    const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
+    const { id } = req.params;
+
+    try {
+        const clientCheck = await knex('clientes').where("id", id).first();
+
+        if (!clientCheck) {
+            return res.status(404).json({ mensagem: "Cliente não encontrado." });
+        }
+
+        const needed = { nome, email, cpf };
+        for (let key in needed) {
+            if (!needed[key]) {
+                return res.status(400).json({ mensagem: `O campo ${key} não pode ser vazio.` })
+            }
+        }
+
+        if (!nome || !email || !cpf) {
+            return res.status(400).json({ mensagem: 'Insira todos os campos.' });
+        }
+
+        const emailCheck = await knex('clientes').where('email', email).andWhere('id', '<>', id).first();
+        if (emailCheck) {
+            return res.status(400).json({ mensagem: 'Email já cadastrado.' });
+        }
+
+        const cpfCheck = await knex('clientes').where('cpf', cpf).andWhere('id', '<>', id).first();
+        if (cpfCheck) {
+            return res.status(400).json({ mensagem: 'CPF já cadastrado.' });
+        }
+
+        await knex('clientes').where('id', id).update(req.body);
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+};
+
 const detailCustomer = async (req, res) => {
     try {
         const { id } = req.params
@@ -156,5 +195,6 @@ module.exports = {
     editUser,
     listClient,
     registerClient,
+    editClient,
     detailCustomer
 }

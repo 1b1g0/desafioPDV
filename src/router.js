@@ -8,6 +8,7 @@ const {
   listClient,
   registerClient,
   detailCustomer,
+  editClient,
 } = require("./controller/user.js");
 const loginUser = require("./controller/login.js");
 const {
@@ -35,6 +36,7 @@ router.get("/produto", listProduct);
 router.get("/produto/:id", detailProduct);
 router.delete("/produto/:id", deleteProduct);
 router.post("/cliente", registerClient);
-router.get('/cliente/:id', detailCustomer)
+router.put("cliente/:id", editClient);
+router.get("/cliente/:id", detailCustomer);
 
 module.exports = router;
