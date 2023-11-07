@@ -36,7 +36,7 @@ router.get("/produto", listProduct);
 router.get("/produto/:id", detailProduct);
 router.delete("/produto/:id", deleteProduct);
 router.post("/cliente", registerClient);
-router.put("cliente/:id", editClient);
+router.put("/cliente/:id", editClient);
 router.get("/cliente/:id", detailCustomer);
 
 module.exports = router;
