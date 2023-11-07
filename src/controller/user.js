@@ -110,14 +110,15 @@ const registerClient = async (req, res) => {
     
     const regexCPF = /[.-]/g;
     if (cpf.includes(regexCPF)){
-        cpf = cpf.replace(regexCPF,'')
+        cpf = cpf.replace(regexCPF,'');
+        console.log(req.body);
     }
 
     if (cep && cep.includes('-')) {
         cep = cep.replace('-','');
+        console.log(req.body);
     }
     
-
     try {
         const emailCheck = await knex('clientes').where('email', email).first();
         if (emailCheck) {
