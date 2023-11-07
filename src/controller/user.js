@@ -104,22 +104,22 @@ const registerClient = async (req, res) => {
         }
     }
     if (!nome || !email || !cpf) {
-        return res.status(400).json('Insira todos os campos.');
+        return res.status(400).json({ mensagem: 'Insira todos os campos.' });
     }
 
     try {
         const emailCheck = await knex('clientes').where('email', email).first();
         if (emailCheck) {
-            return res.status(400).json('Email já cadastrado.');
+            return res.status(400).json({ mensagem: 'Email já cadastrado.' });
         }
 
         const cpfCheck = await knex('clientes').where('cpf', cpf).first();
         if (cpfCheck) {
-            return res.status(400).json('CPF já cadastrado.');
+            return res.status(400).json({ mensagem: 'CPF já cadastrado.' });
         }
 
         const clientRegister = await knex('clientes').insert(req.body);
-        return res.status(200).json('Cliente cadastrado com sucesso.');
+        return res.status(200).json({ mensagem: 'Cliente cadastrado com sucesso.' });
     } catch (error) {
         return res.status(500).json(error.message)
     }
