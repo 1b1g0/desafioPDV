@@ -95,17 +95,28 @@ const listClient = async (req, res) => {
 }
 
 const registerClient = async (req, res) => {
-    const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
+    let { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
+
+    if (!nome || !email || !cpf) {
+        return res.status(400).json('Insira os campos necessários.');
+    }
 
     const needed = { nome, email, cpf };
     for (let key in needed) {
         if (!needed[key]) {
-            return res.status(400).json({ mensagem: `O campo ${key} não pode ser vazio.` })
+            return res.status(400).json(`O campo ${key} não pode ser vazio.`);
         }
     }
-    if (!nome || !email || !cpf) {
-        return res.status(400).json('Insira todos os campos.');
+    
+    const regexCPF = /[.-]/g;
+    if (cpf.includes(regexCPF)){
+        cpf = cpf.replace(regexCPF,'')
     }
+
+    if (cep && cep.includes('-')) {
+        cep = cep.replace('-','');
+    }
+    
 
     try {
         const emailCheck = await knex('clientes').where('email', email).first();
