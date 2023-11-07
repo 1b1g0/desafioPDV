@@ -52,8 +52,18 @@ const editProduct = async (req, res) => {
   const { id } = req.params;
   const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
 
-  if (!descricao || !quantidade_estoque || !valor || !categoria_id) {
+  if (!descricao || !valor || !categoria_id) {
     return res.status(400).json({ mensagem: "Informe todos os campos." });
+  }
+
+  if (valor <= 0) {
+    return res.status(400).json({ mensagem: "Informe um valor válido" });
+  }
+
+  if (quantidade_estoque < 0) {
+    return res
+      .status(400)
+      .json({ mensagem: "Informe uma quantidade em estoque válida." });
   }
 
   try {

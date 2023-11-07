@@ -122,16 +122,55 @@ const registerClient = async (req, res) => {
     try {
         const emailCheck = await knex('clientes').where('email', email).first();
         if (emailCheck) {
-            return res.status(400).json('Email já cadastrado.');
+            return res.status(400).json({ mensagem: 'Email já cadastrado.' });
         }
 
         const cpfCheck = await knex('clientes').where('cpf', cpf).first();
         if (cpfCheck) {
-            return res.status(400).json('CPF já cadastrado.');
+            return res.status(400).json({ mensagem: 'CPF já cadastrado.' });
         }
 
         const clientRegister = await knex('clientes').insert(req.body);
-        return res.status(200).json('Cliente cadastrado com sucesso.');
+        return res.status(200).json({ mensagem: 'Cliente cadastrado com sucesso.' });
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+};
+
+const editClient = async (req, res) => {
+    const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
+    const { id } = req.params;
+
+    try {
+        const clientCheck = await knex('clientes').where("id", id).first();
+
+        if (!clientCheck) {
+            return res.status(404).json({ mensagem: "Cliente não encontrado." });
+        }
+
+        const needed = { nome, email, cpf };
+        for (let key in needed) {
+            if (!needed[key]) {
+                return res.status(400).json({ mensagem: `O campo ${key} não pode ser vazio.` })
+            }
+        }
+
+        if (!nome || !email || !cpf) {
+            return res.status(400).json({ mensagem: 'Insira todos os campos.' });
+        }
+
+        const emailCheck = await knex('clientes').where('email', email).andWhere('id', '<>', id).first();
+        if (emailCheck) {
+            return res.status(400).json({ mensagem: 'Email já cadastrado.' });
+        }
+
+        const cpfCheck = await knex('clientes').where('cpf', cpf).andWhere('id', '<>', id).first();
+        if (cpfCheck) {
+            return res.status(400).json({ mensagem: 'CPF já cadastrado.' });
+        }
+
+        await knex('clientes').where('id', id).update(req.body);
+        return res.status(204).send();
     } catch (error) {
         return res.status(500).json(error.message)
     }
@@ -168,5 +207,6 @@ module.exports = {
     editUser,
     listClient,
     registerClient,
+    editClient,
     detailCustomer
 }
