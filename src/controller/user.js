@@ -107,18 +107,19 @@ const registerClient = async (req, res) => {
             return res.status(400).json({mensagem: `O campo ${key} não pode ser vazio.`});
         }
     }
-
-    const letterTestCpf = cpf.match(/[a-zA-Z\.\-]/g); 
-    const letterTestCep = cep.match(/[a-zA-Z\.\-]/g);
-
+     
+    const letterTestCpf = cpf.match(/\D+/g); 
+    
     if (cpf.length != 11 ||  letterTestCpf) {
         return res.status(400).json({mensagem: 'CPF inválido'});
     }
     
-    if (cep && (cep.length != 8 || letterTestCep)) {
-        return res.status(400).json({mensagem: 'CEP inválido'});
+    if(cep){
+        const letterTestCep = cep.match(/\D+/g);
+        if ((cep.length != 8 || letterTestCep)) {
+            return res.status(400).json({mensagem: 'CEP inválido'});
+        }
     }
-    
     try {
         const emailCheck = await knex('clientes').where('email', email).first();
         if (emailCheck) {
