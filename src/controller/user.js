@@ -3,19 +3,7 @@ const knex = require('../database/connection/connection.js');
 const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
-    for (let key in req.body) {
-        // essa validação serve pra checar se algum campo informado está vazio
-        // poderia ser um intermediário e usar antes dos POST e PUT.
-        if (!req.body[key]) {
-            return res.status(400).json({ mensagem: `O campo ${key} não pode ser vazio.` })
-        }
-    }
-
     const { nome, email, senha } = req.body;
-
-    if (!nome || !email || !senha) {
-        return res.status(400).json({ mensagem: "Informe todos os campos." })
-    }
 
     try {
         const emailCheck = await knex('usuarios')
@@ -45,15 +33,11 @@ const registerUser = async (req, res) => {
 const detailUser = async (req, res) => {
     return res.json(req.usuario)
 };
+
 const editUser = async (req, res) => {
     const { nome, email, senha } = req.body;
 
-    if (!nome || !email || !senha) {
-        return res.status(400).json({ mensagem: "Informe todos os campos." })
-    };
-
     try {
-
         const { id } = req.usuario;
 
         if (!id) {
@@ -97,28 +81,19 @@ const listClient = async (req, res) => {
 const registerClient = async (req, res) => {
     const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
 
-    if (!nome || !email || !cpf) {
-        return res.status(400).json({mensagem: 'Insira os campos necessários.'});
+    const letterTestCpf = cpf.match(/[a-zA-Z\.\-]/g);
+
+    if (letterTestCpf) {
+        return res.status(400).json({ mensagem: 'CPF inválido' });
     }
 
-    const needed = { nome, email, cpf };
-    for (let key in needed) {
-        if (!needed[key]) {
-            return res.status(400).json({mensagem: `O campo ${key} não pode ser vazio.`});
+    if (cep) {
+        const letterTestCep = cep.match(/[a-zA-Z\.\-]/g);
+        if (letterTestCep) {
+            return res.status(400).json({ mensagem: 'CEP inválido' });
         }
     }
 
-    const letterTestCpf = cpf.match(/[a-zA-Z\.\-]/g); 
-    const letterTestCep = cep.match(/[a-zA-Z\.\-]/g);
-
-    if (cpf.length != 11 ||  letterTestCpf) {
-        return res.status(400).json({mensagem: 'CPF inválido'});
-    }
-    
-    if (cep && (cep.length != 8 || letterTestCep)) {
-        return res.status(400).json({mensagem: 'CEP inválido'});
-    }
-    
     try {
         const emailCheck = await knex('clientes').where('email', email).first();
         if (emailCheck) {
@@ -130,7 +105,7 @@ const registerClient = async (req, res) => {
             return res.status(400).json({ mensagem: 'CPF já cadastrado.' });
         }
 
-        const clientRegister = await knex('clientes').insert(req.body);
+        await knex('clientes').insert(req.body);
         return res.status(200).json({ mensagem: 'Cliente cadastrado com sucesso.' });
     } catch (error) {
         return res.status(500).json(error.message)
@@ -141,22 +116,24 @@ const editClient = async (req, res) => {
     const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
     const { id } = req.params;
 
+    const letterTestCpf = cpf.match(/[a-zA-Z\.\-]/g);
+
+    if (letterTestCpf) {
+        return res.status(400).json({ mensagem: 'CPF inválido' });
+    }
+
+    if (cep) {
+        const letterTestCep = cep.match(/[a-zA-Z\.\-]/g);
+        if (letterTestCep) {
+            return res.status(400).json({ mensagem: 'CEP inválido' });
+        }
+    }
+
     try {
         const clientCheck = await knex('clientes').where("id", id).first();
 
         if (!clientCheck) {
             return res.status(404).json({ mensagem: "Cliente não encontrado." });
-        }
-
-        const needed = { nome, email, cpf };
-        for (let key in needed) {
-            if (!needed[key]) {
-                return res.status(400).json({ mensagem: `O campo ${key} não pode ser vazio.` })
-            }
-        }
-
-        if (!nome || !email || !cpf) {
-            return res.status(400).json({ mensagem: 'Insira todos os campos.' });
         }
 
         const emailCheck = await knex('clientes').where('email', email).andWhere('id', '<>', id).first();
