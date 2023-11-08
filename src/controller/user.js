@@ -95,7 +95,7 @@ const listClient = async (req, res) => {
 }
 
 const registerClient = async (req, res) => {
-    let { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
+    const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
 
     if (!nome || !email || !cpf) {
         return res.status(400).json({mensagem: 'Insira os campos necessários.'});
@@ -108,11 +108,14 @@ const registerClient = async (req, res) => {
         }
     }
 
-    if (cpf.length < 11 || cpf.includes('.')) {
+    const letterTestCpf = cpf.match(/[a-zA-Z\.\-]/g); 
+    const letterTestCep = cep.match(/[a-zA-Z\.\-]/g);
+
+    if (cpf.length != 11 ||  letterTestCpf) {
         return res.status(400).json({mensagem: 'CPF inválido'});
     }
     
-    if (cep && cep.lenght < 8 || cep.includes('-')) {
+    if (cep && (cep.length != 8 || letterTestCep)) {
         return res.status(400).json({mensagem: 'CEP inválido'});
     }
     
