@@ -98,25 +98,22 @@ const registerClient = async (req, res) => {
     let { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
 
     if (!nome || !email || !cpf) {
-        return res.status(400).json('Insira os campos necessários.');
+        return res.status(400).json({mensagem: 'Insira os campos necessários.'});
     }
 
     const needed = { nome, email, cpf };
     for (let key in needed) {
         if (!needed[key]) {
-            return res.status(400).json(`O campo ${key} não pode ser vazio.`);
+            return res.status(400).json({mensagem: `O campo ${key} não pode ser vazio.`});
         }
     }
-    
-    const regexCPF = /[.-]/g;
-    if (cpf.includes(regexCPF)){
-        cpf = cpf.replace(regexCPF,'');
-        console.log(req.body);
-    }
 
-    if (cep && cep.includes('-')) {
-        cep = cep.replace('-','');
-        console.log(req.body);
+    if (cpf.length < 11 || cpf.includes('.')) {
+        return res.status(400).json({mensagem: 'CPF inválido'});
+    }
+    
+    if (cep && cep.lenght < 8 || cep.includes('-')) {
+        return res.status(400).json({mensagem: 'CEP inválido'});
     }
     
     try {
