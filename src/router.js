@@ -20,7 +20,7 @@ const {
   deleteProduct,
 } = require("./controller/product.js");
 const { verifyToken } = require("./middleware/login.js");
-const validateBody = require("./middleware/validate-body.js");
+const { validateBody } = require("./middleware/validate-body.js");
 const userSchema = require("./schemas/user.js");
 const loginSchema = require("./schemas/login.js");
 const productSchema = require("./schemas/product.js");
@@ -41,7 +41,7 @@ router.get("/produto/:id", detailProduct);
 router.delete("/produto/:id", deleteProduct);
 router.get("/cliente", listClient);
 router.post("/cliente", validateBody(clientSchema), registerClient);
-router.put("cliente/:id", editClient);
+router.put("/cliente/:id", editClient);
 router.get("/cliente/:id", detailCustomer);
 
 module.exports = router;
