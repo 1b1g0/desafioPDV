@@ -24,22 +24,23 @@ const clientSchema = joi.object({
     "string.length": "O campo cep deve ter 8 caracteres",
   }),
   rua: joi.string().messages({
+    "string.base": "O campo rua deve ser string.",
     "string.empty": "O campo rua não pode ser uma string vazia.",
   }),
   numero: joi.string().messages({
-    "string.base": "O campo nome deve ser string.",
+    "string.base": "O campo numero deve ser string.",
     "string.empty": "O campo numero não pode ser uma string vazia.",
   }),
   bairro: joi.string().messages({
-    "string.base": "O campo nome deve ser string.",
+    "string.base": "O campo bairro deve ser string.",
     "string.empty": "O campo bairro não pode ser uma string vazia.",
   }),
   cidade: joi.string().messages({
-    "string.base": "O campo nome deve ser string.",
+    "string.base": "O campo cidade deve ser string.",
     "string.empty": "O campo cidade não pode ser uma string vazia.",
   }),
   estado: joi.string().messages({
-    "string.base": "O campo nome deve ser string.",
+    "string.base": "O campo estado deve ser string.",
     "string.empty": "O campo estado não pode ser uma string vazia.",
   }),
 });
