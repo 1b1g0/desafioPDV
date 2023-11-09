@@ -41,7 +41,7 @@ router.get("/produto/:id", detailProduct);
 router.delete("/produto/:id", deleteProduct);
 router.get("/cliente", listClient);
 router.post("/cliente", validateBody(clientSchema), registerClient);
-router.put("/cliente/:id", editClient);
+router.put("/cliente/:id", validateBody(clientSchema), editClient);
 router.get("/cliente/:id", detailCustomer);
 
 module.exports = router;

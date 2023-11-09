@@ -1,11 +1,16 @@
 const joi = require("joi");
 
 const clientSchema = joi.object({
-  nome: joi.string().required().messages({
-    "string.base": "O campo nome deve ser string.",
-    "string.empty": "O campo nome não pode ser uma string vazia.",
-    "any.required": "O campo nome é obrigatório.",
-  }),
+  nome: joi
+    .string()
+    .pattern(/^[A-Za-z]+$/)
+    .required()
+    .messages({
+      "string.pattern.base": "O campo nome deve conter apenas letras",
+      "string.base": "O campo nome deve ser string.",
+      "string.empty": "O campo nome não pode ser uma string vazia.",
+      "any.required": "O campo nome é obrigatório.",
+    }),
   email: joi.string().email().required().messages({
     "string.base": "O campo email deve ser string.",
     "string.empty": "O campo email não pode ser uma string vazia.",
