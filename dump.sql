@@ -56,7 +56,7 @@ CREATE TABLE pedidos_produtos (
     pedido_id int REFERENCES pedidos(id),
     produto_id int REFERENCES produtos(id),
     quantidade_produto int,
-    valor_produto int REFERENCES produtos(valor)
+    valor_produto int
 );
 
 ALTER TABLE produtos
