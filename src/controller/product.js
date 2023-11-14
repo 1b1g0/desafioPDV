@@ -1,4 +1,5 @@
 const knex = require("../database/connection/connection.js");
+const { uploadFile } = require("../storage/s3_storage.js");
 
 const listCategories = async (req, res) => {
   try {
@@ -11,19 +12,42 @@ const listCategories = async (req, res) => {
 
 const registerProduct = async (req, res) => {
   const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
+  const { file } = req;
 
   try {
-    const categorieCheck = await knex("categorias").where("id", categoria_id);
+    const categoryCheck = await knex("categorias").where("id", categoria_id);
 
-    if (categorieCheck.length === 0) {
+    if (categoryCheck.length === 0) {
       return res.status(404).json({ mensagem: "Categoria não encontrada." });
     }
 
+    if (file) {
+      const produto_imagem = (
+        await uploadFile(
+          `productimages/${file.originalname}`,
+          file.buffer,
+          file.mimetype
+        )
+      ).url;
+
+      await knex("produtos").insert({
+        descricao,
+        quantidade_estoque,
+        valor,
+        categoria_id,
+        produto_imagem,
+      });
+
+      return res
+        .status(201)
+        .json({ mensagem: "Produto cadastrado com sucesso." });
+    }
+
     await knex("produtos").insert({
-      descricao: descricao,
-      quantidade_estoque: quantidade_estoque,
-      valor: valor,
-      categoria_id: categoria_id,
+      descricao,
+      quantidade_estoque,
+      valor,
+      categoria_id,
     });
 
     return res
@@ -37,6 +61,7 @@ const registerProduct = async (req, res) => {
 const editProduct = async (req, res) => {
   const { id } = req.params;
   const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
+  const { file } = req;
 
   try {
     const product = await knex("produtos").where({ id }).first();
@@ -51,11 +76,31 @@ const editProduct = async (req, res) => {
       return res.status(404).json({ mensagem: "Categoria não encontrada." });
     }
 
+    if (file) {
+      const produto_imagem = (
+        await uploadFile(
+          `productimages/${file.originalname}`,
+          file.buffer,
+          file.mimetype
+        )
+      ).url;
+
+      await knex("produtos").where({ id }).update({
+        descricao,
+        quantidade_estoque,
+        valor,
+        categoria_id,
+        produto_imagem,
+      });
+
+      return res.status(201).json({ mensagem: "Produto atualizado!" });
+    }
+
     await knex("produtos").where({ id }).update({
-      descricao: descricao,
-      quantidade_estoque: quantidade_estoque,
-      valor: valor,
-      categoria_id: categoria_id,
+      descricao,
+      quantidade_estoque,
+      valor,
+      categoria_id,
     });
 
     return res.status(201).json({ mensagem: "Produto atualizado!" });

@@ -25,6 +25,7 @@ const userSchema = require("./schemas/user.js");
 const loginSchema = require("./schemas/login.js");
 const productSchema = require("./schemas/product.js");
 const clientSchema = require("./schemas/client.js");
+const multer = require("./middleware/multer.js");
 
 router.post("/usuario", validateBody(userSchema), registerUser);
 router.post("/login", validateBody(loginSchema), loginUser);
@@ -34,8 +35,18 @@ router.use(verifyToken);
 
 router.put("/usuario", validateBody(userSchema), editUser);
 router.get("/usuario", detailUser);
-router.post("/produto", validateBody(productSchema), registerProduct);
-router.put("/produto/:id", validateBody(productSchema), editProduct);
+router.post(
+  "/produto",
+  multer.single("produto_imagem"),
+  validateBody(productSchema),
+  registerProduct
+);
+router.put(
+  "/produto/:id",
+  multer.single("produto_imagem"),
+  validateBody(productSchema),
+  editProduct
+);
 router.get("/produto", listProduct);
 router.get("/produto/:id", detailProduct);
 router.delete("/produto/:id", deleteProduct);
