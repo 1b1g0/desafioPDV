@@ -1,7 +1,7 @@
 CREATE DATABASE pdv;
 
 CREATE TABLE usuarios (
- id serial PRIMARY KEY,
+id serial KEY PRIMARY KEY,
  nome varchar(255) NOT NULL,
  email varchar(255) NOT NULL UNIQUE,
  senha text NOT NULL
