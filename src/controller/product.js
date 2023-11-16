@@ -1,5 +1,5 @@
 const knex = require("../database/connection/connection.js");
-const { uploadFile } = require("../storage/s3_storage.js");
+const { uploadFile, deleteFile } = require("../storage/s3_storage.js");
 
 const listCategories = async (req, res) => {
   try {
@@ -164,6 +164,8 @@ const deleteProduct = async (req, res) => {
     }
 
     await knex("produtos").where({ id }).del();
+
+    await deleteFile(product.produto_imagem);
 
     return res.status(200).json({ mensagem: "Produto excluído com sucesso!" });
   } catch (error) {

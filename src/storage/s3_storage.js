@@ -16,4 +16,11 @@ const uploadFile = async (path, buffer, mimetype) => {
   };
 };
 
-module.exports = { uploadFile };
+const deleteFile = async (path) => {
+  await s3.deleteObject({
+    Bucket: process.env.S3_BUCKETNAME,
+    Key: path
+  }).promise();
+}
+
+module.exports = { uploadFile, deleteFile };
