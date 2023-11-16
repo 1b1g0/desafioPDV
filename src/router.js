@@ -55,4 +55,6 @@ router.post("/cliente", validateBody(clientSchema), registerClient);
 router.put("/cliente/:id", validateBody(clientSchema), editClient);
 router.get("/cliente/:id", detailCustomer);
 
+//router.post("/pedido", registerOrder);
+
 module.exports = router;
