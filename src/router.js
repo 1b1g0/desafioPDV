@@ -21,6 +21,7 @@ const {
   detailProduct,
   deleteProduct,
 } = require("./controller/product.js");
+const { listOrder } = require("./controller/order.js");
 const { verifyToken } = require("./middleware/login.js");
 const { validateBody } = require("./middleware/validate-body.js");
 const userSchema = require("./schemas/user.js");
@@ -56,6 +57,7 @@ router.get("/cliente", listClient);
 router.post("/cliente", validateBody(clientSchema), registerClient);
 router.put("/cliente/:id", validateBody(clientSchema), editClient);
 router.get("/cliente/:id", detailCustomer);
+router.get("/pedido", listOrder);
 
 const {
   registerOrder
