@@ -14,7 +14,7 @@ const orderSchema = joi.object({
   }),
 
   pedido_produtos: joi.array().items(
-    Joi.object({
+    joi.object({
       produto_id: joi.number().integer().positive().required().messages({
         'number.base': 'O campo produto_id deve ser um número',
         'number.integer': 'O campo produto_id deve ser um número inteiro',

@@ -9,7 +9,9 @@ const {
   registerClient,
   detailCustomer,
   editClient,
+  
 } = require("./controller/user.js");
+
 const loginUser = require("./controller/login.js");
 const {
   listCategories,
@@ -55,6 +57,10 @@ router.post("/cliente", validateBody(clientSchema), registerClient);
 router.put("/cliente/:id", validateBody(clientSchema), editClient);
 router.get("/cliente/:id", detailCustomer);
 
-//router.post("/pedido", registerOrder);
+const {
+  registerOrder
+} = require("./controller/order.js");
+const orderSchema = require("./schemas/order.js");
 
+router.post('/pedido',validateBody(orderSchema), registerOrder);
 module.exports = router;
