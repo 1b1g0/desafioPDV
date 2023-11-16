@@ -1,5 +1,5 @@
 const knex = require("../database/connection/connection.js");
-const { uploadFile } = require("../storage/s3_storage.js");
+const { uploadFile, deleteFile } = require("../storage/s3_storage.js");
 
 const listCategories = async (req, res) => {
   try {
@@ -161,6 +161,10 @@ const deleteProduct = async (req, res) => {
 
     if (productExist) {
       return res.status(409).json({ mensagem: "Não foi possivel excluir o produto, pois está vinculado um ou mais pedidos!" })
+    }
+
+    if (product.produto_imagem) {
+      await deleteFile(product.produto_imagem);
     }
 
     await knex("produtos").where({ id }).del();
