@@ -3,16 +3,17 @@ const knex = require('../database/connection/connection.js');
 const listOrder = async (req, res) => {
     const customerId = req.query.cliente_id;
     if (customerId) {
-        const isNumeric = Number(customerId) === customerId;
+        const isNumeric = Number(customerId) == customerId;
         if (!isNumeric){
             return res.status(400).json({
                 mensagem: `${customerId} não é um id válido.`
             })
         }
+
     }
     try {
-        if (customerId){
-            const customerCheck = knex(pedidos)
+        if (customerId) {
+            const customerCheck = await knex('pedidos')
             .where("cliente_id", customerId)
             .select("cliente_id")
             .first();
@@ -23,21 +24,39 @@ const listOrder = async (req, res) => {
                 })
             }
 
-            const orders = 
-            knex.select('*').from('pedidos')
-            .join('pedidos_produtos', 'pedidos.id', '=', 'pedidos_produtos.pedido_id')
-            .where('pedidos.cliente_id', customerId);
-            
-            return res.status(200).json(orders)
-            
+            const formatedOrders = [];
+
+            const allOrders = await knex('pedidos').where("cliente_id", customerId);
+
+            for (order of allOrders) {
+
+                const orderProducts = await knex('pedidos_produtos')
+                .where('pedido_id', order.id);
+
+                const orderOb = { pedido: order, pedido_produtos: orderProducts};
+
+                formatedOrders.push(orderOb);
+            }
+            return res.status(200).json(formatedOrders)
         } 
         else {
-            const orders = knex('pedidos')
-            .join('pedidos_produtos', 'pedidos_produtos.pedido_id', '=', 'pedidos.id');
+            const formatedOrders = [];
+
+            const allOrders = await knex('pedidos');
+            for (order of allOrders){
+
+                const orderProducts = await knex('pedidos_produtos')
+                .where('pedido_id', order.id);
+
+                const orderOb = { pedido: order, pedido_produtos: orderProducts};
+
+                formatedOrders.push(orderOb);
+            }
             
-            return res.status(200).json(orders);
+            return res.status(200).json(formatedOrders);
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json(error.message);
     }
 };
