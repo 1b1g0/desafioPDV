@@ -9,11 +9,6 @@ const registerUser = async (req, res) => {
 
 }
 
-module.exports = {
-  registerUser
-}
-const knex = require('../database/connection/connection.js');
-
 const listOrder = async (req, res) => {
     const customerId = req.query.cliente_id;
     if (customerId) {
@@ -76,5 +71,6 @@ const listOrder = async (req, res) => {
 };
 
 module.exports = {
+    registerUser,
     listOrder,
 }
