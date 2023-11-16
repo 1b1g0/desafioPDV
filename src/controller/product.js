@@ -163,9 +163,11 @@ const deleteProduct = async (req, res) => {
       return res.status(409).json({ mensagem: "Não foi possivel excluir o produto, pois está vinculado um ou mais pedidos!" })
     }
 
-    await knex("produtos").where({ id }).del();
+    if (product.produto_imagem) {
+      await deleteFile(product.produto_imagem);
+    }
 
-    await deleteFile(product.produto_imagem);
+    await knex("produtos").where({ id }).del();
 
     return res.status(200).json({ mensagem: "Produto excluído com sucesso!" });
   } catch (error) {
