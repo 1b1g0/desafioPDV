@@ -46,6 +46,7 @@ const registerOrder = async (req, res) => {
     //registar pedido ***********
     const pedido = await knex("pedidos")
       .insert({
+        cliente_id,
         observacao,
         valor_total: valorTotal,
       })
