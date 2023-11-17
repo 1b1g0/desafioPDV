@@ -1,20 +1,81 @@
 const knex = require("../database/connection/connection.js");
 const orderSchema = require('../schemas/order.js')
+
+//const sendEmail = require("../server/")
+
+
 //*******************Register Order****************/
 const registerOrder = async (req, res) => {
+  const { cliente_id, observacao, pedido_produtos } = req.body;
 
   try {
     await orderSchema.validate(req.body)
-    const { observacao, pedido_produtos } = req.body
-    console.log(pedido_produtos)
-    let erros = [] 
+    //const usuarioId = req.usuario.id
+    let erros = []
+    let valorTotal = 0
 
+    for (const item of pedido_produtos) {
+      let produtoCorrente = await knex('produtos')
+        .where('id', '=', item.produto_id)
+        .first()
 
-    return res.status(201).json({ mensagem: "Pedido gerado com sucesso" })
-  } catch (error) {
-    console.log(error.message)
-    return res.status(500).json({ mensagem: error.message })
+      if (!produtoCorrente) {
+        erros.push({
+          mensagem: `Não existe produto para o produto_id informado: ${item.produto_id}`
+        })
+        continue //verifica o proximo item
+      }
+
+      if (item.quantidade_produto > produtoCorrente.quantidade_estoque) {
+        erros.push({
+          mensagem: `A quantidade solicitada: ${ item.quantidade_produto } para o produto de ID: ${ produtoCorrente.id } é maior que a quantidade em estoque: ${ produtoCorrente.quantidade_estoque }`
+        })
+      continue
+    }
+
+    valorTotal += produtoCorrente.valor * item.quantidade_produto
+    item.valor_produto = produtoCorrente.valor
+    item.quantidade_estoque = produtoCorrente.quantidade_estoque
   }
+
+    if (erros.length > 0) {
+    return res.status(400).json({ erros })
+  }
+
+  //registar pedido ***********
+  const pedido = await knex('pedidos')
+    .insert({
+      
+      observacao,
+      valor_total : valorTotal
+    })
+    .returning('*') //retorna tudo 
+    
+    console.log(pedido[0])
+
+  for (const item of pedido_produtos) {
+    await knex('pedidos_produtos')
+      .insert({
+        pedido_id: pedido[0].id,
+        produto_id: item.produto_id,
+        quantidade_produto: item.quantidade_produto,
+        valor_produto: item.valor_produto
+      })
+
+    let quantidadeReduzida = item.quantidade_estoque - item.quantidade_produto
+
+    await knex('produtos')
+      .where('id', '=', item.produto_id)
+      .update({
+        quantidade_estoque: quantidadeReduzida
+      })
+  }
+
+  return res.status(201).json({ mensagem: "Pedido gerado com sucesso" })
+} catch (error) {
+  console.log(error.message)
+  return res.status(500).json({ mensagem: error.message })
+}
 }
 
 //*******************List Order****************/
@@ -83,3 +144,4 @@ module.exports = {
   registerOrder,
   listOrder,
 }
+
