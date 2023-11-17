@@ -70,8 +70,8 @@ const registerOrder = async (req, res) => {
     transporter.sendMail({
       from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_FROM}>`,
       to: `${client.nome} <${client.email}>`,
-      subject: "Tentativa de Login",
-      text: `Um pedido foi criado para você, ${client.nome}`,
+      subject: "Pedido criado",
+      text: `Um pedido foi criado para você, ${client.nome}!`,
     });
 
     return res.status(201).json({ mensagem: "Pedido gerado com sucesso" });
