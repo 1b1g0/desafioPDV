@@ -157,19 +157,18 @@ const deleteProduct = async (req, res) => {
       return res.status(404).json({ mensagem: "Produto não encontrado." });
     }
 
-    const productExist = await knex("pedidos_produtos")
-      .where({ produto_id: id })
-      .first();
+    const orderExist = await knex("pedidos_produtos").where({ produto_id: id }).first();
 
-    if (productExist) {
+    if (orderExist) {
       return res.status(409).json({
-        mensagem:
-          "Não foi possivel excluir o produto, pois está vinculado um ou mais pedidos!",
-      });
+          mensagem:
+            "Não foi possivel excluir o produto, pois está vinculado a um ou mais pedidos!",
+        });
     }
 
     if (product.produto_imagem) {
-      await deleteFile(product.produto_imagem);
+      const path = product.produto_imagem.split("/").slice(3).join("/");
+      await deleteFile(path);
     }
 
     await knex("produtos").where({ id }).del();
