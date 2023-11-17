@@ -21,13 +21,14 @@ const {
   detailProduct,
   deleteProduct,
 } = require("./controller/product.js");
-const { listOrder } = require("./controller/order.js");
+const { listOrder, registerOrder } = require("./controller/order.js");
 const { verifyToken } = require("./middleware/login.js");
 const { validateBody } = require("./middleware/validate-body.js");
 const userSchema = require("./schemas/user.js");
 const loginSchema = require("./schemas/login.js");
 const productSchema = require("./schemas/product.js");
 const clientSchema = require("./schemas/client.js");
+const orderSchema = require("./schemas/order.js");
 const multer = require("./middleware/multer.js");
 
 router.post("/usuario", validateBody(userSchema), registerUser);
@@ -57,12 +58,7 @@ router.get("/cliente", listClient);
 router.post("/cliente", validateBody(clientSchema), registerClient);
 router.put("/cliente/:id", validateBody(clientSchema), editClient);
 router.get("/cliente/:id", detailCustomer);
+router.post('/pedido',validateBody(orderSchema), registerOrder);
 router.get("/pedido", listOrder);
 
-const {
-  registerOrder
-} = require("./controller/order.js");
-const orderSchema = require("./schemas/order.js");
-
-router.post('/pedido',validateBody(orderSchema), registerOrder);
 module.exports = router;
