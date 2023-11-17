@@ -1,15 +1,19 @@
 const knex = require("../database/connection/connection.js");
 const transporter = require("../email/transporter.js");
-const orderSchema = require("../schemas/order.js");
 
 //*******************Register Order****************/
 const registerOrder = async (req, res) => {
   const { cliente_id, observacao, pedido_produtos } = req.body;
 
   try {
-    await orderSchema.validate(req.body);
     let erros = [];
     let valorTotal = 0;
+
+    const client = await knex("clientes").where({ id: cliente_id }).first();
+
+    if (!client) {
+      return res.status(404).json({mensagem: 'Não existe o cliente informado.'})
+    }
 
     for (const item of pedido_produtos) {
       let produtoCorrente = await knex("produtos")
@@ -62,8 +66,6 @@ const registerOrder = async (req, res) => {
         quantidade_estoque: quantidadeReduzida,
       });
     }
-
-    const client = await knex("clientes").where({ id: cliente_id }).first();
 
     await transporter.sendMail({
       from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_FROM}>`,
