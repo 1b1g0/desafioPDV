@@ -47,8 +47,6 @@ const registerOrder = async (req, res) => {
       })
       .returning("*"); //retorna tudo
 
-    console.log(pedido[0]);
-
     for (const item of pedido_produtos) {
       await knex("pedidos_produtos").insert({
         pedido_id: pedido[0].id,
@@ -76,7 +74,6 @@ const registerOrder = async (req, res) => {
 
     return res.status(201).json({ mensagem: "Pedido gerado com sucesso" });
   } catch (error) {
-    console.log(error.message);
     return res.status(500).json({ mensagem: error.message });
   }
 };
