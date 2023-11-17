@@ -67,7 +67,7 @@ const registerOrder = async (req, res) => {
 
     const client = await knex("clientes").where({ id: cliente_id }).first();
 
-    transporter.sendMail({
+    await transporter.sendMail({
       from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_FROM}>`,
       to: `${client.nome} <${client.email}>`,
       subject: "Pedido criado",
